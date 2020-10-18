@@ -1,0 +1,19 @@
+{
+  "name": "moonda-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LouiMinister/moonda-backend.git"
+  },
+  "author": "LouiMinister",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LouiMinister/moonda-backend/issues"
+  },
+  "homepage": "https://github.com/LouiMinister/moonda-backend#readme"
+}
