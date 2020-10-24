@@ -1,0 +1,542 @@
+swagger: "2.0"
+info:
+  description: "This is a sample server Petstore server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For this sample, you can use the api key `special-key` to test the authorization     filters."
+  version: "1.0.0"
+  title: "Swagger Petstore"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "moonda.kr"
+basePath: "/api/v1"
+securityDefinitions:
+  petstore_auth:
+    type: "oauth2"
+    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:pets: "modify pets in your account"
+      read:pets: "read your pets"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+schemes:
+- "http"
+tags:
+- name: "chatbot"
+  description: "챗봇과의 대화 관련"
+- name: "center"
+  description: "문화센터 관련"
+- name: "lecture"
+  description: "강좌 관련"
+- name: "user"
+  description: "사용자 관련"
+- name: "notice"
+  description: "공지 관련"
+- name: "address"
+  description: "주소 관련"
+- name: "image"
+  description: "이미지 관련"
+# 필터링, 정렬, 필드선택, 페이징을 parameter로 주도록
+# ?sort=-id,+name => id를 desc로 name을 asc로
+# ?fields=id,key,color
+# ?offset=5&limit=5
+# 200 – OK – Eyerything is working
+# 201 – OK – New resource has been created
+# 204 – OK – The resource was successfully deleted
+# 304 – Not Modified – The client can use cached data
+# 400 – Bad Request – The request was invalid or cannot be served. The exact error should be explained in the error payload. E.g. „The JSON is not valid“
+# 401 – Unauthorized – The request requires an user authentication
+# 403 – Forbidden – The server understood the request, but is refusing it or the access is not allowed.
+# 404 – Not found – There is no resource behind the URI.
+# 422 – Unprocessable Entity – Should be used if the server cannot process the enitity, e.g. if an image cannot be formatted or mandatory fields are missing in the payload.
+# 500 – Internal Server Error – API developers should avoid this error. If an error occurs in the global catch blog, the stracktrace should be logged and not returned as response.
+
+
+paths:
+  /centers:
+    get:
+      tags:
+        - "center"
+      summary: "모든 문화센터 리스트 조회"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "조회 성공"
+          schema:
+            type : "array"
+            items:
+              $ref: "#/definitions/Center"
+  /centers/{center-id}:
+    get:
+      tags:
+        - "center"
+      summary: "특정 문화센터 조회"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "center-id"
+        in: "path"
+        description: "문화센터의 key값"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "조회 성공"
+          schema:
+            $ref: "#/definitions/Center"
+            
+  /centers/{center-id}/notices:
+    get:
+      tags:
+        - "center"
+        - "notice"
+      summary: "문화센터의 공지사항 목록 조회"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "center-id"
+        in: "path"
+        description: "센터의 key값"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "조회 성공"
+          schema:
+            type : "array"
+            items:
+              $ref: "#/definitions/Notice"          
+  /centers/{center-id}/lectures:
+    get:
+      tags:
+        - "lecture"
+      summary: "특정 문화센터의 강좌목록 조회"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "center-id"
+        in: "path"
+        description: "센터의 key값"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "조회 성공"
+          schema:
+            type : "array"
+            items:
+              $ref: "#/definitions/Lecture"          
+
+  /lectures:
+    get:
+      tags:
+        - "lecture"
+      summary: "모든 강좌 리스트 조회"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "조회 성공"
+          schema:
+            type : "array"
+            items:
+              $ref: "#/definitions/Lecture"          
+  /lectures/{lecture-id}:
+    get:
+      tags:
+        - "lecture"
+      summary: "특정 강좌 조회"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "lecture-id"
+        in: "path"
+        description: "강좌의 key값"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "조회 성공"
+          schema:
+            $ref: "#/definitions/Lecture"              
+
+  /users:
+    get:
+      tags:
+        - "user"
+      summary: "모든 회원 리스트 조회"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "조회 성공"
+          schema:
+            type : "array"
+            items:
+              $ref: "#/definitions/User"              
+    post:
+      tags:
+        - "user"
+      summary: "회원 추가"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "추가 성공"
+  /users/{user-id}:
+    get:
+      tags:
+        - "user"
+      summary: "특정 회원 조회"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user-id"
+        in: "path"
+        description: "회원의 key값"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "조회 성공"
+          schema:
+            $ref: "#/definitions/Lecture"              
+    put:
+      tags:
+        - "user"
+      summary: "특정 회원 정보 수정"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user-id"
+        in: "path"
+        description: "회원의 key값"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "수정 성공"
+  /users/{user-id}/kids/{kid-id}:
+    get:
+      tags:
+        - "user"
+      summary: "특정 회원의 특정 아이 조회"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user-id"
+        in: "path"
+        description: "회원의 key값"
+        required: true
+        type: "integer"
+      - name: "kid-id"
+        in: "path"
+        description: "아이의 key값"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "조회 성공"
+          schema:
+            $ref: '#/definitions/Kids'
+    put:
+      tags:
+        - "user"
+      summary: "특정 아이의 정보 수정"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user-id"
+        in: "path"
+        description: "회원의 key값"
+        required: true
+        type: "integer"
+      - name: "kid-id"
+        in: "path"
+        description: "아이의 key값"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "수정 성공"
+  
+
+
+  /notices:
+    get:
+      tags:
+        - "notice"
+      summary: "모든 리스트 조회"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "조회 성공"
+          schema:
+            type: "array"
+            items: 
+              $ref: "#/definitions/Notice"
+  /notices/{notice-id}:
+    get:
+      tags:
+        - "notice"
+      summary: "특정 공지 조회"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "notice-id"
+        in: "path"
+        description: "공지의 key값"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "조회 성공"
+          schema: 
+            $ref: "#/definitions/Notice"
+          
+          
+  /address:
+    get:
+      tags:
+        - "address"
+      summary: "지역구 정보 리스트 조회"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "조회 성공"
+          schema:
+            type: "array"
+            items: 
+              $ref: "#/definitions/Address"
+  /address/{address-id}:
+    get:
+      tags:
+        - "address"
+      summary: "특정 지역구 정보 조회"
+      produces:
+      - "application/json"
+      parameters:
+        - name: "address-id"
+          in: "path"
+          description: "지역구의 고유 key값"
+          required: true
+          type: "integer"
+      responses:
+        "200":
+           description: "조회 성공"
+           schema:
+             $ref: "#/definitions/Address"
+
+
+
+  /v1/api/chatbot/skills/{skillId}/first-script:
+    get:
+      tags:
+        - "chatbot"
+      summary: "스킬 발동 시 챗봇의 첫 대본 조회"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "skillId"
+        in: "path"
+        description: "스킬의 고유 key값"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "조회 성공"
+          schema: 
+            $ref: "#/definitions/Script"
+        "404":
+          description: "Script not found"
+  /v1/api/chatbot/skills/{skillId}/reviews:
+    post:
+      tags:
+        - "chatbot"
+      summary: "스킬에 대한 사용자 평가 추가"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "skillId"
+        in: "path"
+        description: "스킬의 고유 key값"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "Skill Review object"
+        required: true
+        schema:
+          $ref: "#/definitions/SkillReview"
+      responses:
+        "200":
+          description: "추가 성공"
+        "404":
+          description: "User or Skill not found"
+  /v1/api/chatbot/script/{scriptId}:
+   get:
+    tags:
+      - "chatbot"
+    summary: "script id로 챗봇의 대본 조회"
+    produces: 
+    - "application/json"
+    parameters:
+    - name : "scriptId"
+      in: "path"
+      description: "대본의 고유 key값"
+      required: true
+      type: "integer"
+    responses:
+      "200":
+        description: "조회 성공"
+        schema: 
+          $ref: "#/definitions/Script"
+      "404":
+        description: "Script not found"
+  /v1/api/chatbot/script/{scriptId}/reply-scripts:
+    get:
+      tags:
+        - "chatbot"
+      summary: "script id로 사용자의 답변 대본들 조회"
+      produces: 
+      - "application/json"
+      parameters:
+      - name : "scriptId"
+        in: "path"
+        description: "대본의 고유 key값"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "조회 성공"
+          schema:
+            type : "array"
+            items:
+              $ref: "#/definitions/ReplyScript"
+        "404":
+          description: "Script not found"
+    
+    
+definitions:
+  Script:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      chatbot_skill_id:
+        type: "integer"
+      contents:
+        type: "string"
+      depth:
+        type: "integer"
+        
+  ReplyScript:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      type_code:
+        type: "string"
+        enum: 
+          - "choc"
+          - "eval"
+          - "numb"
+          - "sntc"
+          - "taro"
+          - "word"
+      contents:
+        type: "string"
+      prev_chatbot_script_id:
+        type: "integer"
+        
+  SkillReview:
+    type: "object"
+    properties:
+      user_id:
+        type: "integer"
+      rating_code:
+        type: "integer"
+      message:
+        type: "string"
+        
+  Lecture:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      #카테고리
+      location_id:
+        type: "integer" # location id
+      # 수업시간
+      # 등록기간
+      fee:
+        type: "integer"
+      #정원
+      #안내사항
+      
+  Center:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      location_id:
+        type: "string"
+        
+  User:
+    type: "object"
+    properties:
+      uid: 
+        type: "integer"
+      id:
+        type: "string"
+      email:
+        type: "string"
+      phone_num:
+        type: "integer"
+      birthday:
+        type: "string"
+      gender:
+        type: "string"
+      # 관심카테고리, 문화센터, 성별
+      
+  Notice:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      center_id:
+        type: "integer"
+      title:
+        type: "string"
+      context:
+        type: "string"
+        
+  Kids:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      parent_uid:
+        type: "integer"
+      gender:
+        type: "string"
+      # 관심카테고리
+      
+  Address:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      #도시 구 읍 면 동
+      
