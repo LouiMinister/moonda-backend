@@ -2,9 +2,11 @@
   "name": "moonda-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
+  "type": "module",
   "scripts": {
-    "start": "nodemon --exec babel-node app.js",
+    "local-start": "nodemon --exec babel-node app.js",
+    "public-start": "pm2 start ecosystem.config.js",
     "test": "test"
   },
   "repository": {
