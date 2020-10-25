@@ -2,9 +2,9 @@ import path from 'path';
 
 const swaggerDefinition = {
     info: {
-        title: 'MyHelloBotApiDoc',
+        title: 'Moonda - REST API',
         version: '1.0.0',
-        description: 'MyHelloBot의 Api 문서입니다'
+        description: 'Moonda의 Api 문서입니다'
     },
     host: 'localhost:3000',
     basePath: '/',
